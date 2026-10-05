@@ -1,3 +1,2 @@
-spacy
-scikit-learn
-streamlit
+ultralytics
+opencv-python

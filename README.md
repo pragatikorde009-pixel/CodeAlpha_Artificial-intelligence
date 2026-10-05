@@ -1,55 +1,58 @@
-# FAQ Chatbot — CodeAlpha Task 2
+# Task 4: Object Detection and Tracking
 
-A simple FAQ chatbot that matches user questions to the closest FAQ using
-TF-IDF vectorization and cosine similarity, with spaCy for text preprocessing.
+CodeAlpha AI Internship submission.
 
-## Files
-- `faq_data.json` — the FAQ dataset (sample: college admissions topic). **Replace this with your own topic's Q&A pairs.**
-- `chatbot.py` — core logic: preprocessing + matching. Run directly for a terminal chatbot.
-- `app.py` — optional Streamlit web UI.
-- `requirements.txt` — Python dependencies.
+## What this does
+- Captures real-time video (webcam or a video file) using OpenCV
+- Detects objects in each frame using a pre-trained YOLOv8 model
+- Tracks detected objects across frames using ByteTrack, assigning each a consistent ID
+- Displays the live output with bounding boxes, class labels, and tracking IDs
 
 ## Setup
 
-```bash
-pip install -r requirements.txt
-python -m spacy download en_core_web_sm
+1. Make sure Python 3.8+ is installed:
+   ```
+   python --version
+   ```
+
+2. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+## Run
+
+```
+python detect_track.py
 ```
 
-## Run in terminal
+- A window will open showing your webcam feed with detected objects boxed, labeled, and tracked.
+- Press `q` to quit.
 
-```bash
-python chatbot.py
+## Using a video file instead of a webcam
+
+Open `detect_track.py` and change this line near the top:
+
+```python
+VIDEO_SOURCE = 0
 ```
 
-## Run with web UI
+to:
 
-```bash
-streamlit run app.py
+```python
+VIDEO_SOURCE = "your_video_file.mp4"
 ```
 
-## Customizing for your own topic
+Place your video file in this same folder.
 
-1. Open `faq_data.json` and replace the questions/answers with your chosen topic
-   (product support, a course, a service, etc.). Keep the same
-   `{"question": "...", "answer": "..."}` structure.
-2. That's it — `chatbot.py` and `app.py` will automatically use the new data.
+## Notes for submission
 
-## How it works
+- **Model used:** YOLOv8n (nano) — pre-trained, fast, good for real-time demos
+- **Tracking algorithm:** ByteTrack (built into `ultralytics`, functionally equivalent to SORT/DeepSORT for this task's requirements)
+- For your submission, include a short screen recording or a few screenshots of the detection window running with visible bounding boxes and tracking IDs.
 
-1. **Preprocessing**: Every FAQ question and user query is lowercased,
-   stripped of stopwords/punctuation, and lemmatized using spaCy.
-2. **Vectorization**: All FAQ questions are converted into TF-IDF vectors.
-3. **Matching**: A user's query is vectorized the same way, then compared
-   to every FAQ question using cosine similarity.
-4. **Response**: The FAQ with the highest similarity score is returned as
-   the answer, as long as it clears a minimum confidence threshold
-   (`SIMILARITY_THRESHOLD` in `chatbot.py`). Otherwise, a fallback message
-   is shown.
+## Troubleshooting
 
-## Notes for your internship report
-
-- You can mention **NLTK/spaCy** for preprocessing (this uses spaCy).
-- Matching technique: **TF-IDF + cosine similarity** (a lightweight, explainable
-  intent-matching approach — no deep learning needed for FAQ bots this size).
-- The Streamlit app fulfills the "optional chat UI" requirement in the task.
+- **First run is slow:** YOLOv8 weights (~6MB) download automatically the first time you run the script.
+- **`cv2.imshow` errors on Colab/headless environments:** live webcam display doesn't work well there — run this locally instead, or process a video file and save the output instead of displaying it live.
+- **No webcam detected:** try `VIDEO_SOURCE = 1` instead of `0`, or use a video file.
