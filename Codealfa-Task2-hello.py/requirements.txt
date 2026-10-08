@@ -1,3 +1,0 @@
-spacy
-scikit-learn
-streamlit
